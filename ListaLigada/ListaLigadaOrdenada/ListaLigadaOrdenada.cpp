@@ -185,15 +185,15 @@ void excluirElemento()
 	cout << "Digite o valor que quer excluir: ";
 	cin >> valorD;
 	
-	NO* naoExiste != posicaoElemento(valorD);
-	if (valorD == NULL)
+	NO* naoExiste = posicaoElemento(valorD);
+	if (primeiro == NULL)
 	{
 		cout << "Lista vazia. \n";
 		return;
 	}
-	if (naoExiste) {
+	else if (naoExiste == NULL) {
 		cout << "O numero digitado nao existe na lista. Digite outro. \n";
-		cout << exibirElementos();
+		exibirElementos();
 		return;
 	}
 	NO* aux = primeiro;

@@ -1,5 +1,9 @@
-#include <iostream>
+ï»¿#include <iostream>
 using namespace std;
+//Feito por: Italo Mazzucatto
+
+//adicoes: funcao ordenadora de elementos, pequenos refinamentos puramente visuais;
+
 
 // definicao de tipo
 struct NO {
@@ -8,6 +12,7 @@ struct NO {
 };
 
 NO* primeiro = NULL;
+NO* ultimo = NULL;
 
 // headers
 void menu();
@@ -17,8 +22,9 @@ void exibirElementos();
 void inserirElemento();
 void excluirElemento();
 void buscarElemento();
+NO* posicaoElemento(int numero);
+void ordenarElementos();
 //--------------------------
-
 
 int main()
 {
@@ -29,7 +35,7 @@ void menu()
 {
 	int op = 0;
 	while (op != 7) {
-		system("cls"); // somente no windows
+		//system("cls"); // somente no windows
 		cout << "Menu Lista Ligada";
 		cout << endl << endl;
 		cout << "1 - Inicializar Lista \n";
@@ -69,7 +75,7 @@ void menu()
 
 void inicializar()
 {
-	// se a lista já possuir elementos
+	// se a lista jï¿½ possuir elementos
 // libera a memoria ocupada
 	NO* aux = primeiro;
 	while (aux != NULL) {
@@ -95,6 +101,33 @@ void exibirQuantidadeElementos() {
 
 }
 
+void ordenarElementos()
+{
+	if (primeiro==NULL||primeiro->prox==NULL)
+	{
+		cout << "Lista Vazia \n";
+		return;
+	}
+
+	bool PosTrocada = true;
+	while (PosTrocada)
+	{
+		PosTrocada = false;
+		NO* atual = primeiro;
+		NO* proximo = primeiro->prox;
+		while(proximo != NULL)
+		{
+			if (atual->valor > proximo->valor)
+			{
+				swap(atual->valor, proximo->valor);
+				PosTrocada = true;
+			}
+			atual = proximo;
+			proximo = proximo->prox;
+		}
+	}
+}
+
 void exibirElementos()
 {
 	if (primeiro == NULL) {
@@ -102,6 +135,7 @@ void exibirElementos()
 		return;
 	}
 	else {
+		ordenarElementos();
 		cout << "Elementos: \n";
 		NO* aux = primeiro;
 		while (aux != NULL) {
@@ -123,26 +157,91 @@ void inserirElemento()
 	cout << "Digite o elemento: ";
 	cin >> novo->valor;
 	novo->prox = NULL;
+	system("cls");
+
+	NO* jaExiste = posicaoElemento(novo->valor);
+
+	if (jaExiste) {
+		cout << "O numero digitado ja esta presente na lista. Digite outro. \n";
+		return;
+	}
 
 	if (primeiro == NULL)
 	{
 		primeiro = novo;
+		ultimo = novo;
 	}
 	else
 	{
-		// procura o final da lista
-		NO* aux = primeiro;
-		while (aux->prox != NULL) {
-			aux = aux->prox;
-		}
-		aux->prox = novo;
+		// Insere no final da lista
+		ultimo->prox = novo;
+		ultimo = novo;
 	}
 }
 
 void excluirElemento()
 {
+	int valorD;
+	cout << "Digite o valor que quer excluir: ";
+	cin >> valorD;
+	
+	NO* naoExiste != posicaoElemento(valorD);
+	if (valorD == NULL)
+	{
+		cout << "Lista vazia. \n";
+		return;
+	}
+	if (naoExiste) {
+		cout << "O numero digitado nao existe na lista. Digite outro. \n";
+		cout << exibirElementos();
+		return;
+	}
+	NO* aux = primeiro;
+	while (aux->prox != NULL) {
+		NO* proxElemento = aux->prox;
 
+		if (primeiro->valor == valorD) {
+			free(primeiro);
+			primeiro = proxElemento;
+			cout << "Elemento deletado com sucesso! \n";
+			break;
+		}
+
+		if (proxElemento->valor == valorD) {
+			aux->prox = proxElemento->prox;
+
+			free(proxElemento);
+			cout << "Elemento deletado com sucesso! \n";
+			break;
+		}
+		aux = aux->prox;
+	}
 }
 
+void buscarElemento()
+{
+	int valorD;
+	cout << "Digite o valor: ";
+	cin >> valorD;
 
+	NO* elemento = posicaoElemento(valorD);
 
+	if (elemento == NULL) {
+		cout << "Nenhum elemento foi encontrado!";
+		return;
+	}
+
+	cout << elemento->valor;
+}
+
+NO* posicaoElemento(int numero) {
+	NO* aux = primeiro;
+	while (aux != NULL) {
+		if (aux->valor == numero)
+		{
+			break;
+		}
+		aux = aux->prox;
+	}
+	return aux;
+}
